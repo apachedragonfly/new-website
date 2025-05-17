@@ -1,0 +1,132 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const lyrics = [
+  {
+    title: 'Honeybun',
+    image: '/assets/images/cover-art/pookie.JPG',
+    excerpt: 'A song for the quiet mornings after the storm.',
+    lyrics: `Verse 1:\nMorning light through curtains drawn\nCoffee steam, a gentle yawn\nYou're still here, my honeybun\nAfter all that we've become\n\nChorus:\nSweet like sugar in my tea\nWarm like sunlight, endlessly\nMy honeybun, my morning sun\nTwo hearts beating, now we're one`,
+    note: 'Written after a long rainy week. This one means a lot to me.'
+  },
+  {
+    title: 'Midnight Rain',
+    image: '/assets/images/cover-art/pookie.JPG',
+    excerpt: 'When the city sleeps and memories dance in the rain.',
+    lyrics: `Verse 1:\nCity lights blur in the rain\nMemories wash down the drain\nEmpty streets call your name\nNothing here feels the same\n\nChorus:\nMidnight rain falling down\nWashing clean this old town\nEvery drop hits the ground\nLike the tears that I found\nIn this midnight rain`,
+    note: 'Inspired by a late-night walk in Sydney.'
+  },
+  // Add more entries as needed
+];
+---
+
+<Layout title="Lyrics - Jeremy Craig Saunders">
+  <main>
+    <section class="min-h-screen bg-[#1A3C2F] py-8">
+      <div class="container mx-auto px-2">
+        <div id="lyrics-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+          {lyrics.map((entry, idx) => (
+            <div
+              class="group bg-[#182b22] border border-[#223b2e] rounded-xl shadow-sm overflow-hidden cursor-pointer hover:shadow-lg hover:border-[#E5C8A6] transition-all duration-300 hover:scale-[1.02] opacity-0 animate-fadeIn"
+              data-idx={idx}
+            >
+              <img src={entry.image} alt={entry.title} class="w-full h-48 object-cover" />
+              <div class="p-4">
+                <h2 class="font-playfair text-lg text-[#E5C8A6] mb-2 truncate">{entry.title}</h2>
+                <p class="text-[#8B7355] text-sm line-clamp-2 leading-relaxed">{entry.excerpt}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div id="lyrics-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 hidden">
+        <div class="bg-[#1A3C2F] rounded-2xl shadow-2xl max-w-lg w-full mx-4 p-8 relative animate-fadeIn">
+          <button id="close-modal" class="absolute top-4 right-4 text-[#E5C8A6] text-2xl hover:text-white">&times;</button>
+          <img id="modal-image" src="" alt="" class="w-full h-40 object-cover rounded-xl mb-4" />
+          <h2 id="modal-title" class="font-playfair text-2xl text-[#E5C8A6] mb-2"></h2>
+          <p id="modal-note" class="text-[#8B7355] text-sm mb-4"></p>
+          <pre id="modal-lyrics" class="text-[#E5C8A6] whitespace-pre-line font-sans text-base leading-relaxed"></pre>
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .animate-fadeIn {
+    animation: fadeIn 1.2s ease forwards;
+    animation-delay: calc(var(--animation-delay, 0) * 200ms);
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Add staggered animation delays to grid items
+    const gridItems = document.querySelectorAll('#lyrics-grid > div');
+    gridItems.forEach((item, index) => {
+      (item as HTMLElement).style.setProperty('--animation-delay', index.toString());
+    });
+
+    const data = [
+      {
+        title: 'Honeybun',
+        image: '/assets/images/cover-art/pookie.JPG',
+        excerpt: 'A song for the quiet mornings after the storm.',
+        lyrics: `Verse 1:\nMorning light through curtains drawn\nCoffee steam, a gentle yawn\nYou're still here, my honeybun\nAfter all that we've become\n\nChorus:\nSweet like sugar in my tea\nWarm like sunlight, endlessly\nMy honeybun, my morning sun\nTwo hearts beating, now we're one`,
+        note: 'Written after a long rainy week. This one means a lot to me.'
+      },
+      {
+        title: 'Midnight Rain',
+        image: '/assets/images/cover-art/pookie.JPG',
+        excerpt: 'When the city sleeps and memories dance in the rain.',
+        lyrics: `Verse 1:\nCity lights blur in the rain\nMemories wash down the drain\nEmpty streets call your name\nNothing here feels the same\n\nChorus:\nMidnight rain falling down\nWashing clean this old town\nEvery drop hits the ground\nLike the tears that I found\nIn this midnight rain`,
+        note: 'Inspired by a late-night walk in Sydney.'
+      }
+    ];
+
+    document.getElementById('lyrics-grid')?.addEventListener('click', (e) => {
+      let target = e.target as HTMLElement;
+      while (target && !target.dataset.idx && target !== document.body) {
+        target = target.parentNode as HTMLElement;
+      }
+      if (target && target.dataset.idx) {
+        const idx = Number(target.dataset.idx);
+        const entry = data[idx];
+        const modalImage = document.getElementById('modal-image') as HTMLImageElement;
+        const modalTitle = document.getElementById('modal-title');
+        const modalNote = document.getElementById('modal-note');
+        const modalLyrics = document.getElementById('modal-lyrics');
+        const modal = document.getElementById('lyrics-modal');
+        
+        if (modalImage && modalTitle && modalNote && modalLyrics && modal && entry) {
+          modalImage.src = entry.image;
+          modalTitle.textContent = entry.title;
+          modalNote.textContent = entry.note;
+          modalLyrics.textContent = entry.lyrics;
+          modal.classList.remove('hidden');
+        }
+      }
+    });
+
+    document.getElementById('close-modal')?.addEventListener('click', () => {
+      document.getElementById('lyrics-modal')?.classList.add('hidden');
+    });
+
+    document.getElementById('lyrics-modal')?.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).id === 'lyrics-modal') {
+        document.getElementById('lyrics-modal')?.classList.add('hidden');
+      }
+    });
+  });
+</script> 

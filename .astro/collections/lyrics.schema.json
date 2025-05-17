@@ -1,0 +1,39 @@
+{
+  "$ref": "#/definitions/lyrics",
+  "definitions": {
+    "lyrics": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "excerpt": {
+          "type": "string"
+        },
+        "album": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        },
+        "audio": {
+          "type": "string"
+        },
+        "$schema": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "excerpt",
+        "date",
+        "slug"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
